@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misiones de Impacto UMAD - EcoCampus UMAD</title>
+    <style>
+        /* Estilos generales - Coherentes con el dashboard */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Encabezado */
+        header {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M50,5 L60,40 L95,40 L65,60 L75,95 L50,75 L25,95 L35,60 L5,40 L40,40 Z"/></svg>');
+            background-size: 80px;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Filtros de misiones */
+        .mission-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: white;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #4caf50;
+            color: white;
+        }
+        
+        /* Grid de misiones */
+        .missions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .mission-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #4caf50;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .mission-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+            text-align: center;
+        }
+        
+        .mission-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #1b5e20;
+            text-align: center;
+        }
+        
+        .mission-description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .mission-details {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .mission-details h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .mission-details ul {
+            padding-left: 20px;
+        }
+        
+        .mission-details li {
+            margin-bottom: 8px;
+        }
+        
+        .mission-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .mission-points {
+            background: #4caf50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .mission-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .status-available {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-in-progress {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* Botones */
+        .btn {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .btn-secondary:hover {
+            background: #c8e6c9;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .missions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .mission-filters {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-btn {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Misiones de Impacto UMAD</h1>
+            <p class="subtitle">Participa en proyectos sostenibles y gana puntos para el Eco-Duelo de Facultades</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="mission-filters">
+            <button class="filter-btn active" data-filter="all">Todas las misiones</button>
+            <button class="filter-btn" data-filter="available">Disponibles</button>
+            <button class="filter-btn" data-filter="in-progress">En progreso</button>
+            <button class="filter-btn" data-filter="completed">Completadas</button>
+        </div>
+        
+        <div class="missions-grid">
+            <!-- Misión 1: Reforestación -->
+            <div class="mission-card" data-status="available">
+                <span class="mission-icon">🌱</span>
+                <h3 class="mission-title">Reforestación en áreas designadas</h3>
+                <p class="mission-description">Participa en la plantación de árboles nativos en las áreas designadas del campus.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Fecha: 15 de octubre, 2025</li>
+                        <li>Duración: 3 horas</li>
+                        <li>Lugar: Jardín Botánico UMAD</li>
+                        <li>Materiales proporcionados: Guantes, herramientas, árboles</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+25 puntos</span>
+                    <span class="mission-status status-available">Disponible</span>
+                </div>
+                
+                <button class="btn unirse-mision" data-mision="1">Unirse a la misión</button>
+            </div>
+            
+            <!-- Misión 2: Programa Basura Cero -->
+            <div class="mission-card" data-status="in-progress">
+                <span class="mission-icon">♻️</span>
+                <h3 class="mission-title">Participación en programa Basura Cero</h3>
+                <p class="mission-description">Ayuda a implementar y promover el programa de separación de residuos en el campus.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Fechas: Octubre - Noviembre 2025</li>
+                        <li>Compromiso: 2 horas semanales</li>
+                        <li>Actividades: Clasificación, educación, monitoreo</li>
+                        <li>Entrega de materiales informativos</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+40 puntos</span>
+                    <span class="mission-status status-in-progress">En progreso</span>
+                </div>
+                
+                <button class="btn btn-secondary ver-progreso" data-mision="2">Ver progreso</button>
+            </div>
+            
+            <!-- Misión 3: Capacitación en eficiencia energética -->
+            <div class="mission-card" data-status="available">
+                <span class="mission-icon">💡</span>
+                <h3 class="mission-title">Capacitación en eficiencia energética</h3>
+                <p class="mission-description">Aprende y enseña prácticas de eficiencia energética a la comunidad universitaria.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Fecha: 22 de octubre, 2025</li>
+                        <li>Duración: 2 horas</li>
+                        <li>Lugar: Auditorio Principal</li>
+                        <li>Incluye certificado de participación</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+20 puntos</span>
+                    <span class="mission-status status-available">Disponible</span>
+                </div>
+                
+                <button class="btn unirse-mision" data-mision="3">Unirse a la misión</button>
+            </div>
+            
+            <!-- Misión 4: Organización de eventos ecológicos -->
+            <div class="mission-card" data-status="completed">
+                <span class="mission-icon">📅</span>
+                <h3 class="mission-title">Organización de eventos ecológicos</h3>
+                <p class="mission-description">Ayuda a planificar y ejecutar eventos con temática ambiental en el campus.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Fechas: Septiembre 2025</li>
+                        <li>Evento realizado: Feria de Sustentabilidad</li>
+                        <li>Participantes: 150+</li>
+                        <li>Impacto: Reducción del 15% en residuos</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+35 puntos</span>
+                    <span class="mission-status status-completed">Completada</span>
+                </div>
+                
+                <button class="btn btn-secondary ver-detalles" data-mision="4">Ver detalles</button>
+            </div>
+            
+            <!-- Misión 5: Huerto Universitario -->
+            <div class="mission-card" data-status="available">
+                <span class="mission-icon">🥬</span>
+                <h3 class="mission-title">Mantenimiento del Huerto Universitario</h3>
+                <p class="mission-description">Colabora en el cuidado y mantenimiento del huerto comunitario de la universidad.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Horarios flexibles</li>
+                        <li>Compromiso mínimo: 2 horas semanales</li>
+                        <li>Actividades: Riego, deshierbe, cosecha</li>
+                        <li>Productos para consumo comunitario</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+30 puntos</span>
+                    <span class="mission-status status-available">Disponible</span>
+                </div>
+                
+                <button class="btn unirse-mision" data-mision="5">Unirse a la misión</button>
+            </div>
+            
+            <!-- Misión 6: Auditoría Energética -->
+            <div class="mission-card" data-status="in-progress">
+                <span class="mission-icon">🔍</span>
+                <h3 class="mission-title">Auditoría Energética Estudiantil</h3>
+                <p class="mission-description">Participa en la identificación de oportunidades de ahorro energético en el campus.</p>
+                
+                <div class="mission-details">
+                    <h4>Detalles de la misión:</h4>
+                    <ul>
+                        <li>Duración: 4 semanas</li>
+                        <li>Formación incluida</li>
+                        <li>Equipos de medición proporcionados</li>
+                        <li>Reporte final con recomendaciones</li>
+                    </ul>
+                </div>
+                
+                <div class="mission-meta">
+                    <span class="mission-points">+50 puntos</span>
+                    <span class="mission-status status-in-progress">En progreso</span>
+                </div>
+                
+                <button class="btn btn-secondary ver-progreso" data-mision="6">Ver progreso</button>
+            </div>
+        </div>
+        <a href="/dashboard.html" class="btn">Volver al Dashboard</a>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h3>EcoCampus UMAD</h3>
+                <p>Transformando la conciencia en acción sostenible a través de la gamificación</p>
+                <p><a href="dashboard.html" style="color: #c8e6c9; text-decoration: none;">← Volver al Dashboard Principal</a></p>
+                <p>Proyecto de Administración de Proyectos de Sistemas - 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filtrado de misiones
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const missionCards = document.querySelectorAll('.mission-card');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remover clase active de todos los botones
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Agregar clase active al botón clickeado
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Mostrar u ocultar misiones según el filtro
+                    missionCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-status') === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Manejo de botones de unirse a misión
+            const unirseButtons = document.querySelectorAll('.unirse-mision');
+            
+            unirseButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const misionId = this.getAttribute('data-mision');
+                    const misionCard = this.closest('.mission-card');
+                    const misionTitulo = misionCard.querySelector('.mission-title').textContent;
+                    
+                    // Cambiar estado de la misión
+                    misionCard.setAttribute('data-status', 'in-progress');
+                    misionCard.querySelector('.mission-status').textContent = 'En progreso';
+                    misionCard.querySelector('.mission-status').className = 'mission-status status-in-progress';
+                    
+                    // Cambiar botón
+                    this.textContent = 'Ver progreso';
+                    this.className = 'btn btn-secondary ver-progreso';
+                    
+                    // Mostrar confirmación
+                    alert(`¡Te has unido a la misión "${misionTitulo}"! Ahora aparece en tus misiones en progreso.`);
+                });
+            });
+            
+            // Efecto de hover para las tarjetas
+            const cards = document.querySelectorAll('.mission-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

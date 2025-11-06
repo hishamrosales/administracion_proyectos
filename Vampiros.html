@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Energy Vampire Slayer | EcoCampus UMAD</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      color: #2e7d32;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #1b5e20;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      font-size: 1rem;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #4caf50;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      border: none;
+      cursor: pointer;
+      width: fit-content;
+    }
+
+    .btn:hover {
+      background: #388e3c;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-list {
+      margin-top: 40px;
+    }
+
+    .report-item {
+      background: #f1f8e9;
+      border-left: 5px solid #4caf50;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .points-display {
+      font-size: 1.2rem;
+      color: #1b5e20;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .success-message {
+      background: #e8f5e9;
+      border: 1px solid #4caf50;
+      color: #2e7d32;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .error-message {
+      background: #ffebee;
+      border: 1px solid #f44336;
+      color: #c62828;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    footer {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 50px;
+      border-radius: 20px 20px 0 0;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+
+      .container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Energy Vampire Slayer</h1>
+    <p>¡Caza a los vampiros energéticos del campus y gana puntos!</p>
+  </header>
+
+  <div class="container">
+    <h2>Reportar un Vampiro Energético</h2>
+    <form id="vampireForm">
+      <label for="ubicacion">Ubicación del equipo</label>
+      <div style="display: flex; gap: 10px;">
+        <select name="ala" id="ala" required style="flex: 1;">
+          <option value="">Selecciona ala</option>
+          <option value="B">Ala B</option>
+          <option value="C">Ala C</option>
+        </select>
+        <select name="piso" id="piso" required style="flex: 1;">
+          <option value="">Selecciona piso</option>
+          <option value="pb">Planta Baja</option>
+          <option value="p1">Piso 1</option>
+          <option value="p2">Piso 2</option>
+          <option value="p3">Piso 3</option>
+          <option value="p4">Piso 4</option>
+        </select>
+      </div>
+
+      <div id="ubicacion-especifica">
+        <label for="salon">Número de Salón</label>
+        <input type="text" id="salon" name="salon" required placeholder="Ej: 101, 201A, etc.">
+        <div class="error-message" id="salonError"></div>
+      </div>
+
+      <label for="tipo">Tipo de equipo</label>
+      <select id="tipo" name="tipo" required>
+        <option value="">Selecciona una opción</option>
+        <option value="Luz encendida">Luz encendida sin uso</option>
+        <option value="Clima encendido">Aire acondicionado innecesario</option>
+        <option value="PC encendida">Computadora sin uso</option>
+        <option value="Otro">Otro equipo</option>
+      </select>
+
+      <label for="comentarios">Comentarios adicionales (opcional)</label>
+      <textarea id="comentarios" name="comentarios" rows="3" placeholder="Detalles del hallazgo"></textarea>
+
+      <div style="text-align: center;">
+        <button type="submit" class="btn">Reportar Vampiro</button>
+      </div>
+      
+      <div class="success-message" id="successMessage">
+        ¡Vampiro energético reportado exitosamente! +10 puntos
+      </div>
+    </form>
+
+    <div class="points-display" style="text-align: center;" id="points">Puntos acumulados: 0
+      <br><br><br><a href="/dashboard.html" class="btn">Volver al Dashboard</a>
+    </div>
+    
+
+    <div class="report-list" id="reportList">
+      <h2>Zonas con más reportes</h2>
+      <div id="emptyMessage" style="text-align: center; color: #666; padding: 20px;">
+        Aún no hay reportes. ¡Sé el primero en reportar un vampiro energético!
+      </div>
+      <!-- Los reportes se agregarán aquí dinámicamente -->
+    </div>
+  </div>
+
+  <footer>
+    <p>EcoCampus UMAD · Cazadores de Energía 2025</p>
+  </footer>
+
+  <script>
+    const form = document.getElementById("vampireForm");
+    const reportList = document.getElementById("reportList");
+    const pointsDisplay = document.getElementById("points");
+    const alaSelect = document.getElementById("ala");
+    const pisoSelect = document.getElementById("piso");
+    const salonInput = document.getElementById("salon");
+    const salonError = document.getElementById("salonError");
+    const successMessage = document.getElementById("successMessage");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    let puntos = 0;
+    const zonaMap = new Map();
+
+    // Función para actualizar las restricciones del campo de salón
+    function actualizarRestriccionesSalon() {
+      const alaValue = alaSelect.value;
+      const pisoValue = pisoSelect.value;
+
+      // Ocultar mensaje de error al cambiar selección
+      salonError.style.display = 'none';
+      salonInput.style.borderColor = '#ccc';
+
+      // Si es Ala B y Piso 2, permitir letras y números
+      if (alaValue === "B" && pisoValue === "p2") {
+        salonInput.pattern = "[A-Za-z0-9]+";
+        salonInput.placeholder = "Ej: 201, 202A, etc";
+        salonInput.title = "Puede contener letras y números";
+      } 
+      // Si es Planta Baja, solo números del 1 al 25
+      else if (pisoValue === "pb") {
+        salonInput.pattern = "[0-9]+";
+        salonInput.placeholder = "Ej: 1, 5, 15, etc. (solo números del 1 al 25)";
+        salonInput.title = "Solo números del 1 al 25";
+      }
+      // Para otras combinaciones, solo números del 100 al 120
+      else {
+        salonInput.pattern = "[0-9]+";
+        salonInput.placeholder = "Ej: 101, 102, etc. (solo números del 100 al 120)";
+        salonInput.title = "Solo números del 100 al 120";
+      }
+    }
+
+    function validarSalon(salonValue, alaValue, pisoValue) {
+      // Si es Ala B y Piso 2, permitir letras y números
+      if (alaValue === "B" && pisoValue === "p2") {
+        const regex = /^[A-B-0-9]+$/;
+        if (!regex.test(salonValue)) {
+          return "Para Ala B, Piso 2, el número de salón debe contener solo letras y números.";
+        }
+      }
+      // Si es Planta Baja, solo números del 1 al 25
+      else if (pisoValue === "pb") {
+        const regex = /^[0-9]+$/;
+        if (!regex.test(salonValue)) {
+          return "Para Planta Baja, el número de salón debe contener solo números.";
+        }
+        
+        const numero = parseInt(salonValue);
+        if (numero < 1 || numero > 25) {
+          return "Para Planta Baja, el número de salón debe estar entre 1 y 25.";
+        }
+      }
+      // Para otras combinaciones, solo números del 100 al 120
+      else {
+        const regex = /^[0-9]+$/;
+        if (!regex.test(salonValue)) {
+          return "Para esta ubicación, el número de salón debe contener solo números.";
+        }
+        
+        const numero = parseInt(salonValue);
+        if (numero < 100 || numero > 120) {
+          return "Para esta ubicación, el número de salón debe estar entre 100 y 120.";
+        }
+      }
+      
+      return ""; // Sin errores
+    }
+
+    // Agregar event listeners para los cambios en los selects
+    alaSelect.addEventListener("change", actualizarRestriccionesSalon);
+    pisoSelect.addEventListener("change", actualizarRestriccionesSalon);
+
+    // Validación en tiempo real del campo de salón
+    salonInput.addEventListener("input", function() {
+      const alaValue = alaSelect.value;
+      const pisoValue = pisoSelect.value;
+      const salonValue = salonInput.value.trim();
+      
+      if (alaValue && pisoValue && salonValue) {
+        const error = validarSalon(salonValue, alaValue, pisoValue);
+        if (error) {
+          salonError.textContent = error;
+          salonError.style.display = 'block';
+          salonInput.style.borderColor = '#f44336';
+        } else {
+          salonError.style.display = 'none';
+          salonInput.style.borderColor = '#4caf50';
+        }
+      } else {
+        salonError.style.display = 'none';
+        salonInput.style.borderColor = '#ccc';
+      }
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const alaValue = alaSelect.value;
+      const pisoValue = pisoSelect.value;
+      const tipoValue = document.getElementById("tipo").value;
+      const comentariosValue = document.getElementById("comentarios").value.trim();
+      const salonValue = salonInput.value.trim();
+
+      // Validación de campos obligatorios
+      if (!alaValue || !pisoValue || !tipoValue || !salonValue) {
+        alert("Por favor completa todos los campos obligatorios.");
+        return;
+      }
+
+      // Validación del número de salón
+      const errorSalon = validarSalon(salonValue, alaValue, pisoValue);
+      if (errorSalon) {
+        salonError.textContent = errorSalon;
+        salonError.style.display = 'block';
+        salonInput.style.borderColor = '#f44336';
+        return;
+      }
+
+      // Aumentar puntos
+      puntos += 10;
+      pointsDisplay.textContent = `Puntos acumulados: ${puntos}`;
+
+      // Mostrar mensaje de éxito
+      successMessage.style.display = 'block';
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+
+      // Ocultar mensaje de "no hay reportes"
+      emptyMessage.style.display = 'none';
+
+      // Crear clave para el mapa
+      const zonaKey = `Ala ${alaValue}, ${pisoValue === 'pb' ? 'Planta Baja' : 'Piso ' + pisoValue.replace('p', '')}, Salón ${salonValue}`;
+
+      // Agregar o actualizar zona reportada
+      if (zonaMap.has(zonaKey)) {
+        zonaMap.set(zonaKey, {
+          count: zonaMap.get(zonaKey).count + 1,
+          tipo: tipoValue,
+          ultimoReporte: new Date().toLocaleString()
+        });
+      } else {
+        zonaMap.set(zonaKey, {
+          count: 1,
+          tipo: tipoValue,
+          ultimoReporte: new Date().toLocaleString()
+        });
+      }
+
+      // Actualizar la lista de reportes
+      actualizarListaReportes();
+
+      // Reset form
+      form.reset();
+      // Restablecer las restricciones después del reset
+      actualizarRestriccionesSalon();
+    });
+
+    function actualizarListaReportes() {
+      // Ordenar zonas por cantidad de reportes
+      const zonasOrdenadas = Array.from(zonaMap.entries()).sort((a, b) => b[1].count - a[1].count);
+
+      // Actualizar lista
+      let html = "";
+      zonasOrdenadas.forEach(([zona, data]) => {
+        html += `
+          <div class="report-item">
+            <strong>${zona}</strong><br/>
+            Tipo: ${data.tipo}<br/>
+            Reportes: ${data.count}<br/>
+            Último reporte: ${data.ultimoReporte}
+          </div>
+        `;
+      });
+      
+      // Buscar el elemento h2 existente y agregar los reportes después de él
+      const h2Element = reportList.querySelector('h2');
+      h2Element.innerHTML = `Zonas con más reportes (${zonasOrdenadas.length})`;
+      
+      // Reemplazar todo después del h2
+      let currentElement = h2Element.nextElementSibling;
+      while (currentElement) {
+        const nextElement = currentElement.nextElementSibling;
+        currentElement.remove();
+        currentElement = nextElement;
+      }
+      
+      reportList.insertAdjacentHTML('beforeend', html);
+    }
+
+    // Inicializar la página
+    actualizarRestriccionesSalon();
+  </script>
+</body>
+</html>

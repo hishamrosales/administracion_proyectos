@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCampus UMAD - Sistema de Gamificación</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Encabezado */
+        header {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" opacity="0.1"><path fill="white" d="M50,5 L60,40 L95,40 L65,60 L75,95 L50,75 L25,95 L35,60 L5,40 L40,40 Z"/></svg>');
+            background-size: 80px;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Tarjetas de características */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #4caf50;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #1b5e20;
+        }
+        
+        .feature-description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .feature-details {
+            text-align: left;
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            flex-grow: 1;
+        }
+        
+        .feature-details h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .feature-details ul {
+            padding-left: 20px;
+        }
+        
+        .feature-details li {
+            margin-bottom: 8px;
+        }
+        
+        /* Puntos y recompensas */
+        .points-system {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .points-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #1b5e20;
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .point-item {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .point-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        /* Sección de ranking */
+        .ranking-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ranking-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #1b5e20;
+            text-align: center;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .ranking-table th {
+            background: #2e7d32;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .ranking-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .ranking-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .ranking-table tr:hover {
+            background: #f1f8e9;
+        }
+        
+        .rank-badge {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #ffc107;
+            color: #333;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Botones */
+        .btn {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #388e3c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .points-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .ranking-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>EcoCampus UMAD</h1>
+            <p class="subtitle">Sistema de Gamificación para la Sostenibilidad Energética</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="points-system">
+            <h2 class="points-title">Sistema de Puntos "Hojas de Roble"</h2>
+            <p>Gana puntos por realizar acciones sostenibles y compite con otras facultades</p>
+            
+            <div class="points-grid">
+                <div class="point-item">
+                    <div class="point-value">+10</div>
+                    <p>Reportar un equipo vampiro</p>
+                </div>
+                <div class="point-item">
+                    <div class="point-value">+15</div>
+                    <p>Apagar luces innecesarias</p>
+                </div>
+                <div class="point-item">
+                    <div class="point-value">+25</div>
+                    <p>Participar en una misión ecológica</p>
+                </div>
+                <div class="point-item">
+                    <div class="point-value">+50</div>
+                    <p>Liderar un proyecto sostenible</p>
+                </div>
+            </div>
+            
+            <a href="#" class="btn">Ver mi progreso</a>
+        </div>
+        
+        <div class="features-grid">
+            <!-- Energy Vampire Slayer -->
+            <div class="feature-card">
+                <span class="feature-icon">🧛</span>
+                <h3 class="feature-title">Energy Vampire Slayer</h3>
+                <p class="feature-description">Función gamificada que identifica "zonas vampiro" en el campus.</p>
+                
+                <div class="feature-details">
+                    <h4>¿Cómo funciona?</h4>
+                    <ul>
+                        <li>Reporta equipos consumiendo energía innecesariamente</li>
+                        <li>Gana puntos por cada vampiro energético detectado</li>
+                        <li>Desbloquea insignias por alcanzar metas</li>
+                        <li>Competencia entre facultades para eliminar más vampiros</li>
+                    </ul>
+                </div>
+                
+                <a href="/Vampiros.html" class="btn">Cazar vampiros</a>
+            </div>
+            
+            <!-- Misiones de Impacto UMAD -->
+            <div class="feature-card">
+                <span class="feature-icon">🎯</span>
+                <h3 class="feature-title">Misiones de Impacto UMAD</h3>
+                <p class="feature-description">Integración de proyectos existentes como "misiones" en la app.</p>
+                
+                <div class="feature-details">
+                    
+                </div>
+                
+                <a style="margin-top: auto;" href="/misiones.html" class="btn">Ver misiones</a>
+            </div>
+            
+            <!-- Semáforo Energético -->
+            <div class="feature-card">
+                <span class="feature-icon">🚦</span>
+                <h3 class="feature-title">Semáforo Energético</h3>
+                <p class="feature-description">Dashboard público que muestra en tiempo real el consumo energético.</p>
+                
+                <div class="feature-details">
+                    <h4>Estados del semáforo:</h4>
+                    <ul>
+                        <li><strong style="color:green">Verde:</strong> Consumo eficiente</li>
+                        <li><strong style="color:orange">Amarillo:</strong> Consumo moderado</li>
+                        <li><strong style="color:red">Rojo:</strong> Consumo alto - ¡Actívate!</li>
+                    </ul>
+                </div>
+                
+                <a href="/semaforo.html" class="btn">Ver estado actual</a>
+            </div>
+            
+            <!-- Eco-Duelo de Facultades -->
+            <div class="feature-card">
+                <span class="feature-icon">⚔</span>
+                <h3 class="feature-title">Eco-Duelo de Facultades</h3>
+                <p class="feature-description">Competencia semestral entre carreras basada en métricas de ahorro.</p>
+                
+                <div class="feature-details">
+                    <h4>Métricas evaluadas:</h4>
+                    <ul>
+                        <li>Luces apagadas en áreas comunes</li>
+                        <li>Reportes de vampiros energéticos</li>
+                        <li>Participación en misiones ecológicas</li>
+                        <li>Reducción de consumo eléctrico</li>
+                    </ul>
+                </div>
+                
+                <a href="#" class="btn">Ver ranking</a>
+            </div>
+        </div>
+        
+        <div class="ranking-section">
+            <h2 class="ranking-title">Ranking Eco-Duelo de Facultades</h2>
+            <p>Competencia actual - Semestre Agosto-Diciembre 2025</p>
+            
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>Posición</th>
+                        <th>Facultad</th>
+                        <th>Puntos</th>
+                        <th>Vampiros Cazados</th>
+                        <th>Misiones Completadas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="rank-badge">1</span></td>
+                        <td>Ingeniería en Sistemas</td>
+                        <td>1,250</td>
+                        <td>42</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">2</span></td>
+                        <td>Administración</td>
+                        <td>1,180</td>
+                        <td>38</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">3</span></td>
+                        <td>Derecho</td>
+                        <td>980</td>
+                        <td>32</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">4</span></td>
+                        <td>Psicología</td>
+                        <td>850</td>
+                        <td>28</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">5</span></td>
+                        <td>Comunicación</td>
+                        <td>720</td>
+                        <td>24</td>
+                        <td>4</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="#" class="btn">Ver ranking completo</a>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h3>EcoCampus UMAD</h3>
+                <p>Transformando la conciencia en acción sostenible a través de la gamificación</p>
+                <p>Proyecto de Administración de Proyectos de Sistemas - 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simulación de interacción con el semáforo energético
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cambiar el estado del semáforo cada 10 segundos (simulación)
+            setInterval(function() {
+                const states = ['green', 'yellow', 'red'];
+                const currentState = states[Math.floor(Math.random() * states.length)];
+                
+                // Actualizar visualización del semáforo (podría ser más elaborado)
+                console.log('Estado del semáforo:', currentState);
+            }, 10000);
+            
+            // Efecto de hover mejorado para las tarjetas
+            const cards = document.querySelectorAll('.feature-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
